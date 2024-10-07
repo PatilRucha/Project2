@@ -10,7 +10,7 @@ abstract class Expr {
     /*
      * Part 2: implement the visitor pattern for expressions
      */
-    abstract <R> R accept(ExprVisitor<R> v);
+    abstract <R> R accept(ExprVisitor<R> visitor);
 }
 
 abstract class BinaryExpr extends Expr {
@@ -35,11 +35,29 @@ class PlusExpr extends BinaryExpr {
     public PlusExpr(Expr e1, Expr e2) {
         super(e1, e2);
     }
+    @Override
+    float eval() {
+        return getE1().eval() + getE2().eval();
+    }
+
+    @Override
+    <R> R accept(ExprVisitor<R> visitor) {
+        return visitor.visitPlusExpr(this);
+    }
 }
 
 class MinusExpr extends BinaryExpr {
     public MinusExpr(Expr e1, Expr e2) {
         super(e1, e2);
+    }
+    @Override
+    float eval() {
+        return getE1().eval() - getE2().eval();
+    }
+
+    @Override
+    <R> R accept(ExprVisitor<R> visitor) {
+        return visitor.visitMinusExpr(this);
     }
 }
 
@@ -47,11 +65,29 @@ class TimesExpr extends BinaryExpr {
     public TimesExpr(Expr e1, Expr e2) {
         super(e1, e2);
     }
+    @Override
+    float eval() {
+        return getE1().eval() * getE2().eval();
+    }
+
+    @Override
+    <R> R accept(ExprVisitor<R> visitor) {
+        return visitor.visitTimesExpr(this);
+    }
 }
 
 class DivExpr extends BinaryExpr {
     public DivExpr(Expr e1, Expr e2) {
         super(e1, e2);
+    }
+     @Override
+    float eval() {
+        return getE1().eval() / getE2().eval(); //  To handle division by zero 
+    }
+
+    @Override
+    <R> R accept(ExprVisitor<R> visitor) {
+        return visitor.visitDivExpr(this);
     }
 }
 
@@ -60,5 +96,14 @@ class FloatExpr extends Expr {
 
     public FloatExpr(float f) {
         this.literal = f;
+    }
+    @Override
+    float eval() {
+        return literal;
+    }
+
+    @Override
+    <R> R accept(ExprVisitor<R> visitor) {
+        return visitor.visitFloatExpr(this);
     }
 }
